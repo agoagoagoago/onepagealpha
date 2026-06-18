@@ -154,6 +154,11 @@ export function trackRequestCompanyFailed(): void {
   trackEvent("request_company_failed");
 }
 
+/** Track a request form submission blocked by client-side validation. */
+export function trackRequestCompanyInvalid(): void {
+  trackEvent("request_company_invalid");
+}
+
 // ---------------------------------------------------------------------------
 // Email-gated download tracking
 // ---------------------------------------------------------------------------

@@ -5,11 +5,14 @@ import {
   trackRequestCompanyFormStarted,
   trackRequestCompanySubmitted,
   trackRequestCompanyFailed,
+  trackRequestCompanyInvalid,
 } from "@/lib/fathom";
 
-// Formspree endpoint, read from the public env var. Missing => graceful notice.
-// Set NEXT_PUBLIC_FORMSPREE_ENDPOINT in .env.local (see .env.example).
-const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
+// Request submissions are sent to a Resend-backed API route (NOT Formspree).
+const REQUEST_API = "/api/request-company";
+
+// Basic email shape check (the server validates again).
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 // Options for the "What should the brief focus on?" checkbox group.
 const FOCUS_OPTIONS = [
@@ -24,11 +27,13 @@ const FOCUS_OPTIONS = [
 ];
 
 type Status = "idle" | "submitting" | "success" | "error";
+type FieldErrors = { company?: string; email?: string; link?: string };
 
 const labelClass = "block text-sm font-medium text-ink";
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-line bg-ivory px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:border-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold";
 const helpClass = "mt-1 text-xs text-ink-muted";
+const errorTextClass = "mt-1 text-sm text-red-700";
 
 export default function RequestCompanyForm() {
   const [name, setName] = useState("");
@@ -40,6 +45,12 @@ export default function RequestCompanyForm() {
   const [focus, setFocus] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const companyRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
 
   // Ensures request_company_form_started fires at most once per page session.
   const startedRef = useRef(false);
@@ -72,48 +83,70 @@ export default function RequestCompanyForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    // No endpoint configured — fail gracefully (button is already disabled,
-    // this is just a safety net).
-    if (!FORMSPREE_ENDPOINT) return;
-
-    // Required fields (also enforced by the browser via `required`).
-    if (!email.trim() || !company.trim()) return;
-
-    // Track "started" once if it hasn't been already (e.g. via focus/change).
     markStarted();
 
+    // --- Client-side validation ---
+    const errors: FieldErrors = {};
+    if (!company.trim()) {
+      errors.company = "Please enter a company name.";
+    }
+    const trimmedEmail = email.trim();
+    if (trimmedEmail && !EMAIL_REGEX.test(trimmedEmail.toLowerCase())) {
+      errors.email = "Please enter a valid email address.";
+    }
+    const trimmedLink = link.trim();
+    if (trimmedLink && !/^https?:\/\//i.test(trimmedLink)) {
+      errors.link = "Enter a valid URL starting with http:// or https://.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      trackRequestCompanyInvalid();
+      // Focus the first field with an error.
+      if (errors.company) companyRef.current?.focus();
+      else if (errors.email) emailRef.current?.focus();
+      else if (errors.link) linkRef.current?.focus();
+      return; // do NOT call the API
+    }
+    setFieldErrors({});
+    setErrorMessage("");
     setStatus("submitting");
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("company", company);
-      formData.append("ticker", ticker);
-      formData.append("exchange", exchange);
-      formData.append("report_link", link);
-      focus.forEach((f) => formData.append("focus", f));
-      formData.append("message", message);
-      // Hidden metadata fields.
-      formData.append("_subject", "New OnePage Alpha company request");
-      formData.append("source", "onepagealpha.com/request");
+      const sourcePage =
+        typeof window !== "undefined" ? window.location.pathname : "/request";
 
-      const res = await fetch(FORMSPREE_ENDPOINT, {
+      const res = await fetch(REQUEST_API, {
         method: "POST",
-        body: formData,
-        headers: { Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: trimmedEmail,
+          companyName: company.trim(),
+          ticker: ticker.trim(),
+          exchange: exchange.trim(),
+          annualReportLink: trimmedLink,
+          focusAreas: focus,
+          message: message.trim(),
+          sourcePage,
+        }),
       });
 
-      if (res.ok) {
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; message?: string }
+        | null;
+
+      if (res.ok && data?.ok) {
         setStatus("success");
         resetForm();
         trackRequestCompanySubmitted();
       } else {
+        setErrorMessage(data?.message || "Something went wrong. Please try again.");
         setStatus("error");
         trackRequestCompanyFailed();
       }
     } catch {
+      setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
       trackRequestCompanyFailed();
     }
@@ -123,20 +156,6 @@ export default function RequestCompanyForm() {
 
   return (
     <div>
-      {/* Missing-endpoint developer notice */}
-      {!FORMSPREE_ENDPOINT && (
-        <p
-          role="status"
-          className="mb-6 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink-soft"
-        >
-          Form endpoint is not configured yet. Add{" "}
-          <code className="font-mono text-ink">
-            NEXT_PUBLIC_FORMSPREE_ENDPOINT
-          </code>{" "}
-          to your environment variables.
-        </p>
-      )}
-
       {/* Success message */}
       {status === "success" && (
         <p
@@ -155,8 +174,7 @@ export default function RequestCompanyForm() {
           role="alert"
           className="mb-6 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
-          Something went wrong. Please try again, or email the request manually
-          later.
+          {errorMessage || "Something went wrong. Please try again."}
         </p>
       )}
 
@@ -169,7 +187,6 @@ export default function RequestCompanyForm() {
             </label>
             <input
               id="name"
-              name="name"
               type="text"
               autoComplete="name"
               value={name}
@@ -178,25 +195,33 @@ export default function RequestCompanyForm() {
             />
           </div>
 
-          {/* Email (required) */}
+          {/* Email (optional) */}
           <div>
             <label htmlFor="email" className={labelClass}>
-              Email <span className="text-gold">*</span>
+              Email <span className="text-ink-muted">(optional)</span>
             </label>
             <input
               id="email"
-              name="email"
+              ref={emailRef}
               type="email"
-              required
+              inputMode="email"
               autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: undefined }));
+              }}
+              aria-invalid={fieldErrors.email ? true : undefined}
               aria-describedby="email-help"
+              className={inputClass}
             />
-            <p id="email-help" className={helpClass}>
-              Used only if I need to clarify your request.
-            </p>
+            {fieldErrors.email ? (
+              <p className={errorTextClass}>{fieldErrors.email}</p>
+            ) : (
+              <p id="email-help" className={helpClass}>
+                Used only if I need to clarify your request or send a confirmation.
+              </p>
+            )}
           </div>
 
           {/* Company (required) */}
@@ -206,13 +231,18 @@ export default function RequestCompanyForm() {
             </label>
             <input
               id="company"
-              name="company"
+              ref={companyRef}
               type="text"
               required
               value={company}
-              onChange={(e) => setCompany(e.target.value)}
+              onChange={(e) => {
+                setCompany(e.target.value);
+                if (fieldErrors.company) setFieldErrors((p) => ({ ...p, company: undefined }));
+              }}
+              aria-invalid={fieldErrors.company ? true : undefined}
               className={inputClass}
             />
+            {fieldErrors.company && <p className={errorTextClass}>{fieldErrors.company}</p>}
           </div>
 
           {/* Ticker (optional) */}
@@ -222,7 +252,6 @@ export default function RequestCompanyForm() {
             </label>
             <input
               id="ticker"
-              name="ticker"
               type="text"
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
@@ -238,7 +267,6 @@ export default function RequestCompanyForm() {
             </label>
             <input
               id="exchange"
-              name="exchange"
               type="text"
               placeholder="SGX, Bursa, ASX, HKEX, Nasdaq"
               value={exchange}
@@ -255,13 +283,18 @@ export default function RequestCompanyForm() {
             </label>
             <input
               id="report_link"
-              name="report_link"
+              ref={linkRef}
               type="url"
               placeholder="https://"
               value={link}
-              onChange={(e) => setLink(e.target.value)}
+              onChange={(e) => {
+                setLink(e.target.value);
+                if (fieldErrors.link) setFieldErrors((p) => ({ ...p, link: undefined }));
+              }}
+              aria-invalid={fieldErrors.link ? true : undefined}
               className={inputClass}
             />
+            {fieldErrors.link && <p className={errorTextClass}>{fieldErrors.link}</p>}
           </div>
         </div>
 
@@ -276,7 +309,6 @@ export default function RequestCompanyForm() {
               >
                 <input
                   type="checkbox"
-                  name="focus"
                   value={option}
                   checked={focus.includes(option)}
                   onChange={() => toggleFocus(option)}
@@ -295,7 +327,6 @@ export default function RequestCompanyForm() {
           </label>
           <textarea
             id="message"
-            name="message"
             rows={4}
             placeholder="Tell me why this company is interesting or what you want the brief to examine."
             value={message}
@@ -308,7 +339,7 @@ export default function RequestCompanyForm() {
         <div className="mt-8">
           <button
             type="submit"
-            disabled={submitting || !FORMSPREE_ENDPOINT}
+            disabled={submitting}
             className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
             {submitting ? "Submitting..." : "Submit Request"}

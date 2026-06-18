@@ -13,42 +13,25 @@ support button, tracked with Fathom Analytics.
 - `/` — homepage: hero + featured company brief + library teaser
 - `/companies` — library of all company visual briefs (with a tag filter)
 - `/companies/[slug]` — individual company brief (shareable URL)
-- `/request` — "Request a Company" form (submits to Formspree)
+- `/request` — "Request a Company" form (emails via Resend)
 
 All briefs are read from one file: **`data/companies.ts`**.
 
-## Request a Company form (Formspree)
-
-The `/request` page lets visitors suggest a company for a future brief. It posts
-to Formspree via `fetch` (client-side, with loading/success/error states) — no
-backend, no database.
-
-1. Create a form at https://formspree.io and copy its endpoint
-   (looks like `https://formspree.io/f/abcdwxyz`).
-2. Set `NEXT_PUBLIC_FORMSPREE_ENDPOINT` to that endpoint (locally in `.env.local`,
-   in production via Vercel env vars).
-3. Without the endpoint set, the form shows a helpful notice and the submit
-   button is disabled — it never crashes.
-
-Request CTAs link to `/request` from the homepage, the library, every company
-page (with the company prefilled into tracking), and the footer.
-
 ## Email providers at a glance
 
-- **Resend** powers the **email-gated infographic downloads** (via the
-  `/api/download-request` API route).
-- **Formspree** powers **only** the "Request a Company" form (`/request`).
+**Resend** powers all transactional email; **Formspree is no longer used.**
+
+- **Gated infographic downloads** → `/api/download-request` (emails the visitor
+  the download link, optional owner notification).
+- **Request a Company form** (`/request`) → `/api/request-company` (emails the
+  owner the request, plus a confirmation to the requester if they gave an email).
 - `RESEND_API_KEY` is **server-only** — it must **not** be prefixed with
   `NEXT_PUBLIC_` and is never sent to the browser.
 
-## Resend download email setup
+## Resend email setup
 
-Infographic downloads are **email-gated**: clicking any "Download" CTA (or the
-infographic image) opens a modal that captures the visitor's email. The client
-POSTs to `/api/download-request`, which validates server-side, emails the
-visitor the download link via Resend (and optionally notifies the owner), then
-the modal reveals the immediate download button. Buy Me a Coffee and Request a
-Company are NOT gated.
+The download gate and the request form both POST to a Next.js API route that
+validates server-side and sends email via Resend. Buy Me a Coffee is not gated.
 
 1. Create a [Resend](https://resend.com) account.
 2. Verify the sending domain (ideally `onepagealpha.com`).
@@ -57,10 +40,17 @@ Company are NOT gated.
    - `RESEND_API_KEY` — server-only secret (no `NEXT_PUBLIC_` prefix)
    - `RESEND_FROM_EMAIL` — e.g. `OnePage Alpha <hello@onepagealpha.com>`
      (must be on the verified domain; falls back to `onboarding@resend.dev` for testing)
-   - `RESEND_OWNER_EMAIL` — optional; receives an internal notification per download
+   - `RESEND_OWNER_EMAIL` — owner/notification address. **Required** for the
+     Request a Company form; also the download notification recipient.
    - `NEXT_PUBLIC_SITE_URL` — e.g. `https://onepagealpha.com` (used to build the absolute download link)
-5. Keep the Formspree env var only for the request form:
-   `NEXT_PUBLIC_FORMSPREE_ENDPOINT`.
+5. **Redeploy** after setting env vars, then send one real download and one real
+   request on production and confirm both in the Resend dashboard logs.
+
+If `RESEND_API_KEY` (or, for requests, `RESEND_OWNER_EMAIL`) is missing, the API
+routes return a safe error and the UI shows a friendly retry message — they
+never crash or leak the key. Both routes apply a best-effort in-memory rate
+limit (5/IP and 3/email per 10 min); for production-scale limiting use a shared
+store (Upstash Redis / Vercel KV).
 6. **Redeploy** after setting env vars.
 7. Test one real download on production.
 8. Check the Resend dashboard logs to confirm the user email (and owner notification) were sent.

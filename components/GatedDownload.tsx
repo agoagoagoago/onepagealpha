@@ -9,9 +9,9 @@ import {
   type TrackContext,
 } from "@/lib/fathom";
 
-// Gated downloads are powered by a Resend-backed API route (NOT Formspree).
-// The server sends the user the download link by email and reveals the
-// immediate download here. ("Request a Company" still uses Formspree.)
+// Gated downloads are powered by a Resend-backed API route.
+// The server sends the user the download link by email; this modal then shows
+// the confirmation. (The Request a Company form uses Resend too.)
 const DOWNLOAD_API = "/api/download-request";
 
 // Basic email shape check (intentionally simple — the server validates again).
