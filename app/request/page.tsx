@@ -4,7 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import RequestCompanyForm from "@/components/RequestCompanyForm";
 
 export const metadata: Metadata = {
-  title: "Request a Company | OnePage Alpha",
+  title: "Request a Company",
   description:
     "Suggest a public company for a future OnePage Alpha visual annual report brief.",
   alternates: { canonical: "/request" },

@@ -33,16 +33,31 @@ const SITE_URL = "https://onepagealpha.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "OnePage Alpha",
+  // Child pages set just their page name; the template appends the brand.
+  title: {
+    default:
+      "OnePage Alpha — Visual annual report intelligence for busy investors",
+    template: "%s | OnePage Alpha",
+  },
   description: "Visual annual report intelligence for busy investors.",
+  applicationName: "OnePage Alpha",
+  authors: [{ name: "OnePage Alpha" }],
+  creator: "OnePage Alpha",
+  publisher: "OnePage Alpha",
   alternates: {
     canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   openGraph: {
     type: "website",
     url: SITE_URL,
     siteName: "OnePage Alpha",
-    title: "OnePage Alpha",
+    locale: "en_US",
+    title: "OnePage Alpha — Visual annual report intelligence for busy investors",
     description:
       "Download a free annual report infographic and support independent visual financial research.",
     images: [
@@ -54,7 +69,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "OnePage Alpha",
+    title: "OnePage Alpha — Visual annual report intelligence for busy investors",
     description:
       "Download a free annual report infographic and support independent visual financial research.",
     images: [featuredOgImage],
@@ -62,7 +77,32 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: "#FBFAF7",
+};
+
+// Organization + WebSite structured data (JSON-LD) for richer search results.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "OnePage Alpha",
+      url: SITE_URL,
+      logo: `${SITE_URL}/brand/Logo_OnePage_Alpha.png`,
+      description: "Visual annual report intelligence for busy investors.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: "OnePage Alpha",
+      url: SITE_URL,
+      description: "Visual annual report intelligence for busy investors.",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -83,6 +123,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body>
+        {/* Organization + WebSite structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         {children}
 
         {/*

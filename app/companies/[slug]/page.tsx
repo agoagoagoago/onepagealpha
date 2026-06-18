@@ -31,10 +31,13 @@ export function generateMetadata({
 }): Metadata {
   const company = getCompanyBySlug(params.slug);
   if (!company) {
-    return { title: "Brief not found | OnePage Alpha" };
+    return { title: "Brief not found" };
   }
 
-  const title = `${company.name} Visual Brief | OnePage Alpha`;
+  // Page name only — the root template appends "| OnePage Alpha".
+  const title = `${company.name} Visual Brief`;
+  // Full title (with brand) for OG/Twitter, which don't use the template.
+  const ogTitle = `${company.name} Visual Brief | OnePage Alpha`;
   const description = `Free OnePage Alpha annual report infographic for ${company.name}, covering financial highlights, business drivers, key risks, and questions for management.`;
 
   return {
@@ -42,7 +45,7 @@ export function generateMetadata({
     description,
     alternates: { canonical: `/companies/${company.slug}` },
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       url: `/companies/${company.slug}`,
       // Uses the company infographic as the share image when available.
@@ -50,7 +53,7 @@ export function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: ogTitle,
       description,
       images: [company.infographicImage],
     },
@@ -67,8 +70,47 @@ export default function CompanyBriefPage({
 
   const related = getRelatedCompanies(company, 3);
 
+  // Per-company structured data (breadcrumb + the visual brief itself).
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://onepagealpha.com";
+  const pageUrl = `${siteUrl}/companies/${company.slug}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+          { "@type": "ListItem", position: 2, name: "Companies", item: `${siteUrl}/companies` },
+          { "@type": "ListItem", position: 3, name: company.name, item: pageUrl },
+        ],
+      },
+      {
+        "@type": "CreativeWork",
+        name: company.reportTitle,
+        headline: company.reportTitle,
+        description: company.summary,
+        url: pageUrl,
+        image: `${siteUrl}${company.infographicImage}`,
+        datePublished: company.reportDate,
+        inLanguage: "en",
+        keywords: company.tags.join(", "),
+        about: {
+          "@type": "Corporation",
+          name: company.name,
+          tickerSymbol: `${company.exchange}:${company.ticker}`,
+        },
+        publisher: { "@type": "Organization", name: "OnePage Alpha", url: siteUrl },
+        isAccessibleForFree: true,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <SiteHeader />
 
       <main>

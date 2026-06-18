@@ -60,6 +60,9 @@ export default function ImageWithFallback({
       src={src}
       alt={alt}
       className={className}
+      // Mobile/perf: defer offscreen images and decode off the main thread.
+      loading="lazy"
+      decoding="async"
       onError={() => setErrored(true)}
     />
   );

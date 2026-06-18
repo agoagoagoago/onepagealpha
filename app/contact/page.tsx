@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact OnePage Alpha",
+  title: { absolute: "Contact OnePage Alpha" },
   description:
     "Contact OnePage Alpha for enquiries, feedback, corrections, custom visual briefs, partnerships, or collaboration.",
   alternates: { canonical: "/contact" },

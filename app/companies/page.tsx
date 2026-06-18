@@ -7,7 +7,7 @@ import Disclaimer from "@/components/Disclaimer";
 import { getAllCompanies } from "@/lib/companies";
 
 export const metadata: Metadata = {
-  title: "Company Visual Briefs | OnePage Alpha",
+  title: "Company Visual Briefs",
   description:
     "Free annual report infographics designed to help busy investors understand companies faster.",
   alternates: { canonical: "/companies" },
