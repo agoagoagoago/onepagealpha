@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import CompanyExplorer from "@/components/CompanyExplorer";
+import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
 import { getAllCompanies } from "@/lib/companies";
 
@@ -40,6 +41,10 @@ export default function CompaniesPage() {
               available.
             </p>
           </div>
+        </section>
+
+        <section className="mx-auto max-w-content px-6 pb-10">
+          <RequestCompanyCTA location="companies_library" />
         </section>
 
         <section className="mx-auto max-w-content px-6 pb-20">

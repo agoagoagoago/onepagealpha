@@ -97,3 +97,59 @@ export function trackBuyMeACoffee(ctx: TrackContext): void {
   trackEvent("buy_me_a_coffee_clicked"); // general
   if (slug) trackEvent(`coffee_${slug}`); // company-specific
 }
+
+// ---------------------------------------------------------------------------
+// "Request a Company" tracking
+// ---------------------------------------------------------------------------
+
+// Maps a CTA location to its location-specific event name.
+const REQUEST_LOCATION_EVENT: Record<string, string> = {
+  homepage: "request_company_homepage",
+  companies_library: "request_company_library",
+  company_page: "request_company_company_page",
+  footer: "request_company_footer",
+};
+
+/** Track a click on a "Request a Company" CTA. */
+export function trackRequestCompanyClick({
+  location,
+  companySlug,
+  companyName,
+}: {
+  location: string;
+  companySlug?: string;
+  companyName?: string;
+}): void {
+  if (isDev) {
+    // eslint-disable-next-line no-console
+    console.debug(
+      `[fathom] (dev) request_company_clicked @ ${location}${
+        companyName ? ` — ${companyName}` : ""
+      }`,
+    );
+  }
+  trackEvent("request_company_clicked"); // general
+  // location-specific
+  trackEvent(
+    REQUEST_LOCATION_EVENT[location] ??
+      `request_company_${toSafeEventName(location)}`,
+  );
+  // company-specific (only on individual company pages)
+  const slug = companySlug ? toSafeEventName(companySlug) : "";
+  if (slug) trackEvent(`request_company_from_${slug}`);
+}
+
+/** Track that the visitor started filling in the request form (once per page). */
+export function trackRequestCompanyFormStarted(): void {
+  trackEvent("request_company_form_started");
+}
+
+/** Track a successful request form submission. */
+export function trackRequestCompanySubmitted(): void {
+  trackEvent("request_company_submitted");
+}
+
+/** Track a failed request form submission. */
+export function trackRequestCompanyFailed(): void {
+  trackEvent("request_company_failed");
+}

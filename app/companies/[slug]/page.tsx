@@ -6,6 +6,7 @@ import SiteFooter from "@/components/SiteFooter";
 import InfographicPreview from "@/components/InfographicPreview";
 import CoverageGrid from "@/components/CoverageGrid";
 import CompanyGrid from "@/components/CompanyGrid";
+import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
 import TrackedDownloadLink from "@/components/TrackedDownloadLink";
 import TrackedExternalLink from "@/components/TrackedExternalLink";
@@ -147,6 +148,15 @@ export default function CompanyBriefPage({
             >
               Back to Library
             </Link>
+          </div>
+
+          {/* Request a company for a future brief */}
+          <div className="mt-16">
+            <RequestCompanyCTA
+              location="company_page"
+              companySlug={company.slug}
+              companyName={company.name}
+            />
           </div>
         </article>
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import FeaturedCompany from "@/components/FeaturedCompany";
+import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
 import TrackedDownloadLink from "@/components/TrackedDownloadLink";
 import TrackedExternalLink from "@/components/TrackedExternalLink";
@@ -92,6 +93,13 @@ export default function Home() {
               </Link>
             </div>
           </div>
+        </section>
+
+        {/* ===============================================================
+            REQUEST A COMPANY (understated)
+        =============================================================== */}
+        <section className="mx-auto max-w-content px-6 pt-16">
+          <RequestCompanyCTA location="homepage" />
         </section>
 
         {/* ===============================================================

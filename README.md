@@ -13,8 +13,25 @@ support button, tracked with Fathom Analytics.
 - `/` — homepage: hero + featured company brief + library teaser
 - `/companies` — library of all company visual briefs (with a tag filter)
 - `/companies/[slug]` — individual company brief (shareable URL)
+- `/request` — "Request a Company" form (submits to Formspree)
 
 All briefs are read from one file: **`data/companies.ts`**.
+
+## Request a Company form (Formspree)
+
+The `/request` page lets visitors suggest a company for a future brief. It posts
+to Formspree via `fetch` (client-side, with loading/success/error states) — no
+backend, no database.
+
+1. Create a form at https://formspree.io and copy its endpoint
+   (looks like `https://formspree.io/f/abcdwxyz`).
+2. Set `NEXT_PUBLIC_FORMSPREE_ENDPOINT` to that endpoint (locally in `.env.local`,
+   in production via Vercel env vars).
+3. Without the endpoint set, the form shows a helpful notice and the submit
+   button is disabled — it never crashes.
+
+Request CTAs link to `/request` from the homepage, the library, every company
+page (with the company prefilled into tracking), and the footer.
 
 ## Add a new company brief
 
@@ -48,8 +65,18 @@ Each action fires **two** events — a general one and a company-specific one:
 - `infographic_download_clicked` + `download_<slug>` (e.g. `download_ix-biopharma`)
 - `buy_me_a_coffee_clicked` + `coffee_<slug>` (e.g. `coffee_ix-biopharma`)
 
-Helpers live in `lib/fathom.ts` (`trackInfographicDownload` / `trackBuyMeACoffee`),
-take a `{ company, slug, ticker, exchange, location }` context, use
+Request-form events (general + location-specific + optional company-specific):
+
+- `request_company_clicked` + one of `request_company_homepage` /
+  `request_company_library` / `request_company_company_page` /
+  `request_company_footer` (+ `request_company_from_<slug>` on company pages)
+- `request_company_form_started`
+- `request_company_submitted`
+- `request_company_failed`
+
+Helpers live in `lib/fathom.ts` (`trackInfographicDownload` / `trackBuyMeACoffee` /
+`trackRequestCompanyClick` / `trackRequestCompanyFormStarted` /
+`trackRequestCompanySubmitted` / `trackRequestCompanyFailed`), use
 `window.fathom.trackEvent` (never `trackGoal`), and fail silently if Fathom isn't loaded.
 
 > ⚠️ Fathom custom events often do **not** fire on `localhost`. Do final event

@@ -3,6 +3,7 @@ import { getFeaturedCompany } from "@/lib/companies";
 import Disclaimer from "./Disclaimer";
 import TrackedDownloadLink from "./TrackedDownloadLink";
 import TrackedExternalLink from "./TrackedExternalLink";
+import RequestCompanyLink from "./RequestCompanyLink";
 
 /** Shared footer used on every page. Download/support track the featured company. */
 export default function SiteFooter() {
@@ -26,6 +27,12 @@ export default function SiteFooter() {
             <Link href="/companies" className="text-ink-soft transition-colors hover:text-gold">
               Companies
             </Link>
+            <RequestCompanyLink
+              location="footer"
+              className="text-ink-soft transition-colors hover:text-gold"
+            >
+              Request a Company
+            </RequestCompanyLink>
             {/* Footer download points to the featured company and tracks its slug. */}
             <TrackedDownloadLink
               href={featured.downloadFile}
