@@ -10,5 +10,6 @@ To replace the logo later:
   1. Drop the new file here (keep a transparent background if possible).
   2. If the extension changes, update LOGO_PATH in lib/config.ts.
 
-TODO: Add a square favicon/icon version of the OnePage Alpha logo — this wide
-logo is not suitable as a favicon.
+Favicon: a square version of the icon mark was cropped from this logo and saved
+to app/icon.png (browser favicon) and app/apple-icon.png (iOS), both auto-detected
+by Next.js. Regenerate those if the logo's icon mark changes.
