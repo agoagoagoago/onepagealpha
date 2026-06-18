@@ -36,20 +36,29 @@ export type Company = {
 export const companies: Company[] = [
   {
     slug: "ix-biopharma",
-    name: "iX Biopharma",
+    name: "iX Biopharma Ltd.",
     ticker: "42C",
     exchange: "SGX",
     market: "Singapore",
     sector: "Healthcare",
-    reportTitle: "iX Biopharma — a visual brief on the FY2026 annual report",
+    reportTitle: "Corporate Analysis: iX Biopharma Ltd. (SGX: 42C)",
     summary:
-      "A specialty pharmaceutical company focused on sublingual drug delivery and nutraceuticals. This visual brief distils the annual report into its business model, financial highlights, cash flow quality, and the key risks worth understanding.",
-    reportDate: "2026-04-12",
-    tags: ["Healthcare", "Pharmaceuticals", "SGX", "Catalist"],
-    // TODO: place the real image at public/infographics/ix-biopharma-2026.png
-    infographicImage: "/infographics/ix-biopharma-2026.png",
-    // TODO: place the real file at public/downloads/ix-biopharma-2026.pdf
-    downloadFile: "/downloads/ix-biopharma-2026.pdf",
+      "A visual brief on iX Biopharma's FY2025–9M2026 corporate analysis — covering its proprietary sublingual WaferiX drug-delivery platform, the strategic pivot toward US government contracting, financial performance and cash flow, capital structure and dilution, accounting and disclosure observations, and key risks.",
+    reportDate: "2026-06-01",
+    tags: [
+      "Healthcare",
+      "Pharmaceuticals",
+      "Turnaround",
+      "Dilution",
+      "Cash Flow",
+      "Accounting Observations",
+      "SGX",
+      "Catalist",
+    ],
+    // Real infographic (compressed JPEG, full res) at public/infographics/ix-biopharma-june-2026.jpg
+    infographicImage: "/infographics/ix-biopharma-june-2026.jpg",
+    // Real downloadable PDF at public/downloads/ix-biopharma-june-2026.pdf
+    downloadFile: "/downloads/ix-biopharma-june-2026.pdf",
   },
   {
     slug: "addvalue-technologies",
