@@ -1,6 +1,11 @@
 # CLAUDE.md — OnePage Alpha
 
-Project context and conventions for future work. Keep this file updated when the architecture changes.
+Project context and conventions for future work.
+
+> **ALWAYS keep this file up to date.** Whenever a change affects anything documented
+> here (routes, API routes, components, data model, env vars, Fathom events, email
+> behavior, design tokens, SEO, conventions, TODOs), update the relevant section in
+> the **same commit** as the change.
 
 ## What this is
 **OnePage Alpha** — a boutique, editorial financial-research site that publishes free **visual annual-report infographics** ("visual briefs") for busy investors. Positioning: *"Visual annual report intelligence for busy investors."* Educational only — **not financial advice**.
