@@ -4,12 +4,10 @@ import SiteFooter from "@/components/SiteFooter";
 import FeaturedCompany from "@/components/FeaturedCompany";
 import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
-import GatedDownload from "@/components/GatedDownload";
-import TrackedExternalLink from "@/components/TrackedExternalLink";
 import { getFeaturedCompany } from "@/lib/companies";
 
 export default function Home() {
-  // The hero CTAs feature the same company as the section below.
+  // Featured company shown in the section below the hero.
   const featured = getFeaturedCompany();
 
   return (
@@ -35,26 +33,6 @@ export default function Home() {
               Educational research visuals based on public company disclosures.
               Not financial advice.
             </p>
-
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <GatedDownload
-                company={featured}
-                location="homepage_featured"
-                triggerLabel="Download Free Infographic"
-                className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory sm:w-auto"
-              />
-              <TrackedExternalLink
-                href={featured.buyMeACoffeeUrl}
-                company={featured.name}
-                slug={featured.slug}
-                ticker={featured.ticker}
-                exchange={featured.exchange}
-                location="homepage_featured"
-                className="inline-flex w-full items-center justify-center rounded-full border border-line bg-paper px-8 py-3.5 text-sm font-medium text-ink transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory sm:w-auto"
-              >
-                Buy Me a Coffee
-              </TrackedExternalLink>
-            </div>
           </div>
         </section>
 
