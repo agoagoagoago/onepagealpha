@@ -27,12 +27,16 @@ const FOCUS_OPTIONS = [
 ];
 
 type Status = "idle" | "submitting" | "success" | "error";
-type FieldErrors = { company?: string; email?: string; link?: string };
+type FieldErrors = {
+  name?: string;
+  company?: string;
+  email?: string;
+  link?: string;
+};
 
 const labelClass = "block text-sm font-medium text-ink";
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-line bg-ivory px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:border-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold";
-const helpClass = "mt-1 text-xs text-ink-muted";
 const errorTextClass = "mt-1 text-sm text-red-700";
 
 export default function RequestCompanyForm() {
@@ -48,6 +52,7 @@ export default function RequestCompanyForm() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [errorMessage, setErrorMessage] = useState("");
 
+  const nameRef = useRef<HTMLInputElement>(null);
   const companyRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
@@ -87,12 +92,17 @@ export default function RequestCompanyForm() {
 
     // --- Client-side validation ---
     const errors: FieldErrors = {};
-    if (!company.trim()) {
-      errors.company = "Please enter a company name.";
+    if (!name.trim()) {
+      errors.name = "Please enter your name.";
     }
     const trimmedEmail = email.trim();
-    if (trimmedEmail && !EMAIL_REGEX.test(trimmedEmail.toLowerCase())) {
+    if (!trimmedEmail) {
+      errors.email = "Please enter your email address.";
+    } else if (!EMAIL_REGEX.test(trimmedEmail.toLowerCase())) {
       errors.email = "Please enter a valid email address.";
+    }
+    if (!company.trim()) {
+      errors.company = "Please enter a company name.";
     }
     const trimmedLink = link.trim();
     if (trimmedLink && !/^https?:\/\//i.test(trimmedLink)) {
@@ -102,9 +112,10 @@ export default function RequestCompanyForm() {
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       trackRequestCompanyInvalid();
-      // Focus the first field with an error.
-      if (errors.company) companyRef.current?.focus();
+      // Focus the first field with an error (DOM order).
+      if (errors.name) nameRef.current?.focus();
       else if (errors.email) emailRef.current?.focus();
+      else if (errors.company) companyRef.current?.focus();
       else if (errors.link) linkRef.current?.focus();
       return; // do NOT call the API
     }
@@ -180,30 +191,38 @@ export default function RequestCompanyForm() {
 
       <form onSubmit={handleSubmit} onFocus={markStarted} noValidate>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* Name (optional) */}
+          {/* Name (required) */}
           <div>
             <label htmlFor="name" className={labelClass}>
-              Name <span className="text-ink-muted">(optional)</span>
+              Name <span className="text-gold">*</span>
             </label>
             <input
               id="name"
+              ref={nameRef}
               type="text"
+              required
               autoComplete="name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (fieldErrors.name) setFieldErrors((p) => ({ ...p, name: undefined }));
+              }}
+              aria-invalid={fieldErrors.name ? true : undefined}
               className={inputClass}
             />
+            {fieldErrors.name && <p className={errorTextClass}>{fieldErrors.name}</p>}
           </div>
 
-          {/* Email (optional) */}
+          {/* Email (required) */}
           <div>
             <label htmlFor="email" className={labelClass}>
-              Email <span className="text-ink-muted">(optional)</span>
+              Email <span className="text-gold">*</span>
             </label>
             <input
               id="email"
               ref={emailRef}
               type="email"
+              required
               inputMode="email"
               autoComplete="email"
               value={email}
@@ -212,16 +231,9 @@ export default function RequestCompanyForm() {
                 if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: undefined }));
               }}
               aria-invalid={fieldErrors.email ? true : undefined}
-              aria-describedby="email-help"
               className={inputClass}
             />
-            {fieldErrors.email ? (
-              <p className={errorTextClass}>{fieldErrors.email}</p>
-            ) : (
-              <p id="email-help" className={helpClass}>
-                Used only if I need to clarify your request or send a confirmation.
-              </p>
-            )}
+            {fieldErrors.email && <p className={errorTextClass}>{fieldErrors.email}</p>}
           </div>
 
           {/* Company (required) */}

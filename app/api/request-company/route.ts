@@ -89,14 +89,15 @@ export async function POST(req: Request) {
   const sourcePage = (body.sourcePage ?? "").trim();
 
   // --- Validate ---
+  // Name, email, and companyName are required.
+  if (!name || name.length > 120) return NextResponse.json(INVALID, { status: 400 });
   if (!companyName || companyName.length > 160) return NextResponse.json(INVALID, { status: 400 });
-  if (name.length > 120) return NextResponse.json(INVALID, { status: 400 });
   if (ticker.length > 40) return NextResponse.json(INVALID, { status: 400 });
   if (exchange.length > 80) return NextResponse.json(INVALID, { status: 400 });
   if (message.length > 2000) return NextResponse.json(INVALID, { status: 400 });
 
-  // Email optional; if present it must be valid.
-  if (emailRaw && !isValidEmail(emailRaw)) {
+  // Email is required and must be valid.
+  if (!isValidEmail(emailRaw)) {
     return NextResponse.json(INVALID, { status: 400 });
   }
 
