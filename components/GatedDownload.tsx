@@ -6,7 +6,6 @@ import {
   trackDownloadEmailSubmitted,
   trackDownloadEmailInvalid,
   trackDownloadEmailFailed,
-  trackGatedDownloadCompleted,
   type TrackContext,
 } from "@/lib/fathom";
 
@@ -76,8 +75,6 @@ export default function GatedDownload({
   const [status, setStatus] = useState<Status>("idle");
   const [validationError, setValidationError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  // The download URL returned by the API (falls back to the local file path).
-  const [downloadUrl, setDownloadUrl] = useState(company.downloadFile);
   const emailRef = useRef<HTMLInputElement>(null);
 
   // Shared tracking context for this company + location.
@@ -164,7 +161,6 @@ export default function GatedDownload({
         | null;
 
       if (res.ok && data?.ok) {
-        if (data.downloadUrl) setDownloadUrl(data.downloadUrl);
         setStatus("success");
         trackDownloadEmailSubmitted(ctx);
       } else {
@@ -230,19 +226,9 @@ export default function GatedDownload({
                   Your download is ready
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  Thanks — the download link has been sent to your email. You can
-                  also download the infographic now.
+                  Thanks — the download link has been sent to your email. Please
+                  check your inbox (and spam folder) for the infographic.
                 </p>
-                <div className="mt-6">
-                  <a
-                    href={downloadUrl}
-                    download
-                    onClick={() => trackGatedDownloadCompleted(ctx)}
-                    className="inline-flex w-full items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
-                  >
-                    Download Infographic
-                  </a>
-                </div>
               </div>
             ) : (
               // ---- Email capture form ----
