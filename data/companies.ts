@@ -113,21 +113,4 @@ export const companies: Company[] = [
     // Real downloadable PDF at public/downloads/koh-brothers-eco-engineering-june-2026.pdf
     downloadFile: "/downloads/koh-brothers-eco-engineering-june-2026.pdf",
   },
-  {
-    slug: "sample-company",
-    name: "Sample Company Ltd.",
-    ticker: "SMPL",
-    exchange: "SGX",
-    market: "Singapore",
-    sector: "Industrials",
-    reportTitle: "Sample Company Ltd. — a visual brief on the FY2026 annual report",
-    summary:
-      "A placeholder entry showing how a company brief appears in the library. Duplicate this object, swap the details, and add your image and download file to publish a new visual brief.",
-    reportDate: "2026-02-15",
-    tags: ["Industrials", "Sample", "SGX"],
-    // TODO: place the real image at public/infographics/sample-company-2026.png
-    infographicImage: "/infographics/sample-company-2026.png",
-    // TODO: place the real file at public/downloads/sample-company-2026.pdf
-    downloadFile: "/downloads/sample-company-2026.pdf",
-  },
 ];
