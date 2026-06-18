@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { BUY_ME_A_COFFEE_URL } from "@/lib/config";
 
 // Runs in the Node.js serverless runtime (default for route handlers).
 // The in-memory rate limiter below is best-effort and only shared within a warm
@@ -143,6 +144,7 @@ export async function POST(req: Request) {
     <p><a href="${downloadUrl}">Download the infographic</a></p>
     <p>This visual brief is based on public company disclosures and is provided for educational and informational purposes only. It is not financial advice, investment advice, or a recommendation to buy, sell, or hold any security.</p>
     ${optInNote}
+    <p>If these visual briefs are useful, you can support the work: <a href="${BUY_ME_A_COFFEE_URL}">Buy Me a Coffee</a>.</p>
     <p>OnePage Alpha<br/>Visual annual report intelligence for busy investors.</p>
   `.trim();
 
@@ -155,6 +157,9 @@ ${downloadUrl}
 
 This visual brief is based on public company disclosures and is provided for educational and informational purposes only. It is not financial advice, investment advice, or a recommendation to buy, sell, or hold any security.
 ${optInNoteText}
+If these visual briefs are useful, you can support the work — Buy Me a Coffee:
+${BUY_ME_A_COFFEE_URL}
+
 OnePage Alpha
 Visual annual report intelligence for busy investors.`;
 
