@@ -1,10 +1,10 @@
 Put company infographic preview images here (PNG recommended).
 
 Naming convention (must match `infographicImage` in data/companies.ts):
-  ix-biopharma-2026.png
-  addvalue-technologies-2026.png
-  sample-company-2026.png
+  ix-biopharma-2026.png             (placeholder)
+  addvalue-technologies-june-2026.jpg  (real infographic, compressed)
+  sample-company-2026.png           (placeholder)
 
-The .png files currently in this folder are auto-generated PLACEHOLDERS —
-replace them with the real infographics. If an image is missing, the card
-shows a graceful placeholder instead of breaking the layout.
+Placeholder .png files are auto-generated — replace them with the real
+infographics. If an image is missing, the card shows a graceful placeholder
+instead of breaking the layout.

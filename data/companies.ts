@@ -53,20 +53,29 @@ export const companies: Company[] = [
   },
   {
     slug: "addvalue-technologies",
-    name: "Addvalue Technologies",
+    name: "Addvalue Technologies Ltd.",
     ticker: "A31",
     exchange: "SGX",
     market: "Singapore",
-    sector: "Technology",
-    reportTitle: "Addvalue Technologies — a visual brief on the FY2026 annual report",
+    sector: "Satellite Communications",
+    reportTitle:
+      "Equity Research Snapshot: Addvalue Technologies Ltd. (SGX: A31)",
     summary:
-      "A satellite-based communications technology company. This visual brief turns the annual report into a one-page snapshot of how the business makes money, its financial quality, accounting observations, and questions investors can ask management.",
+      "A visual brief on Addvalue Technologies’ FY2026 reported turnaround, highlighting revenue growth, operating cash flow improvement, de-leveraging, order book visibility, customer concentration, capitalized development costs, and valuation/event-risk considerations.",
     reportDate: "2026-06-01",
-    tags: ["Technology", "Satellite", "SGX", "Communications"],
-    // Real infographic (compressed JPEG) at public/infographics/addvalue-technologies-2026.jpg
-    infographicImage: "/infographics/addvalue-technologies-2026.jpg",
-    // Download serves the same image (no PDF provided yet). Swap to a PDF here if you add one.
-    downloadFile: "/infographics/addvalue-technologies-2026.jpg",
+    tags: [
+      "Satellite Communications",
+      "Turnaround",
+      "Cash Flow",
+      "De-leveraging",
+      "Customer Concentration",
+      "Accounting Observations",
+      "SGX",
+    ],
+    // Real infographic (compressed JPEG, full res) at public/infographics/addvalue-technologies-june-2026.jpg
+    infographicImage: "/infographics/addvalue-technologies-june-2026.jpg",
+    // Real downloadable PDF at public/downloads/addvalue-technologies-june-2026.pdf
+    downloadFile: "/downloads/addvalue-technologies-june-2026.pdf",
     isFeatured: true,
   },
   {

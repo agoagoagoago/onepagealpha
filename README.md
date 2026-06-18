@@ -42,6 +42,10 @@ page (with the company prefilled into tracking), and the footer.
 That's it — homepage, library, the new `/companies/<slug>` page, related briefs,
 and SEO metadata all update automatically. No database, no CMS.
 
+> The Addvalue Technologies example uses real files:
+> `public/infographics/addvalue-technologies-june-2026.jpg` (preview) and
+> `public/downloads/addvalue-technologies-june-2026.pdf` (download). The other entries are placeholders.
+
 > If an image or download file is missing, the page shows a graceful placeholder
 > and the layout stays intact — nothing crashes.
 
