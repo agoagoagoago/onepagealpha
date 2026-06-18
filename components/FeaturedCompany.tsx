@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Company } from "@/data/companies";
 import { formatReportDate } from "@/lib/companies";
 import InfographicPreview from "./InfographicPreview";
-import TrackedDownloadLink from "./TrackedDownloadLink";
+import GatedDownload from "./GatedDownload";
 import TrackedExternalLink from "./TrackedExternalLink";
 import Tag from "./Tag";
 
@@ -57,17 +57,12 @@ export default function FeaturedCompany({ company }: { company: Company }) {
             >
               View Full Brief
             </Link>
-            <TrackedDownloadLink
-              href={company.downloadFile}
-              company={company.name}
-              slug={company.slug}
-              ticker={company.ticker}
-              exchange={company.exchange}
+            <GatedDownload
+              company={company}
               location="homepage_featured"
-              className="inline-flex items-center justify-center rounded-full border border-line bg-paper px-7 py-3 text-sm font-medium text-ink transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
-            >
-              Download Infographic
-            </TrackedDownloadLink>
+              triggerVariant="secondary"
+              triggerLabel="Download Infographic"
+            />
             <TrackedExternalLink
               href={company.buyMeACoffeeUrl}
               company={company.name}

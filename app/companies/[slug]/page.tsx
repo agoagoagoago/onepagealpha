@@ -8,7 +8,7 @@ import CoverageGrid from "@/components/CoverageGrid";
 import CompanyGrid from "@/components/CompanyGrid";
 import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
-import TrackedDownloadLink from "@/components/TrackedDownloadLink";
+import GatedDownload from "@/components/GatedDownload";
 import TrackedExternalLink from "@/components/TrackedExternalLink";
 import Tag from "@/components/Tag";
 import {
@@ -120,17 +120,11 @@ export default function CompanyBriefPage({
 
           {/* CTAs */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <TrackedDownloadLink
-              href={company.downloadFile}
-              company={company.name}
-              slug={company.slug}
-              ticker={company.ticker}
-              exchange={company.exchange}
+            <GatedDownload
+              company={company}
               location="company_page_button"
-              className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
-            >
-              Download Infographic
-            </TrackedDownloadLink>
+              triggerLabel="Download Infographic"
+            />
             <TrackedExternalLink
               href={company.buyMeACoffeeUrl}
               company={company.name}

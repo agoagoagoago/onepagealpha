@@ -1,5 +1,6 @@
 import type { Company } from "@/data/companies";
 import CompanyCard from "./CompanyCard";
+import type { GateLocation } from "./GatedDownload";
 
 /** Responsive grid of company brief cards. */
 export default function CompanyGrid({
@@ -8,7 +9,7 @@ export default function CompanyGrid({
   emptyLabel = "No briefs to show yet.",
 }: {
   companies: Company[];
-  downloadLocation?: string;
+  downloadLocation?: GateLocation;
   emptyLabel?: string;
 }) {
   if (companies.length === 0) {

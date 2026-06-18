@@ -4,7 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import FeaturedCompany from "@/components/FeaturedCompany";
 import RequestCompanyCTA from "@/components/RequestCompanyCTA";
 import Disclaimer from "@/components/Disclaimer";
-import TrackedDownloadLink from "@/components/TrackedDownloadLink";
+import GatedDownload from "@/components/GatedDownload";
 import TrackedExternalLink from "@/components/TrackedExternalLink";
 import { getFeaturedCompany } from "@/lib/companies";
 
@@ -37,17 +37,12 @@ export default function Home() {
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <TrackedDownloadLink
-                href={featured.downloadFile}
-                company={featured.name}
-                slug={featured.slug}
-                ticker={featured.ticker}
-                exchange={featured.exchange}
+              <GatedDownload
+                company={featured}
                 location="homepage_featured"
+                triggerLabel="Download Free Infographic"
                 className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory sm:w-auto"
-              >
-                Download Free Infographic
-              </TrackedDownloadLink>
+              />
               <TrackedExternalLink
                 href={featured.buyMeACoffeeUrl}
                 company={featured.name}

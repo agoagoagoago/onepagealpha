@@ -1,10 +1,11 @@
 import type { Company } from "@/data/companies";
-import TrackedDownloadLink from "./TrackedDownloadLink";
+import GatedDownload from "./GatedDownload";
 import ImageWithFallback from "./ImageWithFallback";
 
 /**
- * Large infographic image inside a premium card. The whole image is a tracked
- * download link, and a missing file degrades to a graceful placeholder.
+ * Large infographic image inside a premium card. Clicking the image opens the
+ * email-gated download flow (the image is the gate trigger). A missing file
+ * degrades to a graceful placeholder.
  *
  * Used on the homepage featured section and on individual company pages.
  */
@@ -13,28 +14,19 @@ export default function InfographicPreview({
   location,
 }: {
   company: Company;
-  /** Fathom location for the image-click download, e.g. "company_page_image". */
-  location: string;
+  /** Fathom location for the gated download, e.g. "company_page_image". */
+  location: "homepage_featured" | "company_page_image";
 }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-paper shadow-card">
-      <TrackedDownloadLink
-        href={company.downloadFile}
-        company={company.name}
-        slug={company.slug}
-        ticker={company.ticker}
-        exchange={company.exchange}
-        location={location}
-        ariaLabel={`Download the ${company.name} infographic`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-      >
+      <GatedDownload company={company} location={location} triggerVariant="image">
         <ImageWithFallback
           src={company.infographicImage}
           alt={`${company.name} annual report infographic`}
           className="w-full cursor-pointer transition-opacity duration-200 hover:opacity-95"
           placeholderClassName="aspect-[4/3] w-full"
         />
-      </TrackedDownloadLink>
+      </GatedDownload>
     </div>
   );
 }

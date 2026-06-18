@@ -153,3 +153,65 @@ export function trackRequestCompanySubmitted(): void {
 export function trackRequestCompanyFailed(): void {
   trackEvent("request_company_failed");
 }
+
+// ---------------------------------------------------------------------------
+// Email-gated download tracking
+// ---------------------------------------------------------------------------
+
+/** Track that the email-capture gate opened (user clicked a download CTA). */
+export function trackDownloadGateOpened(ctx: TrackContext): void {
+  const slug = toSafeEventName(ctx.slug);
+  if (isDev) {
+    // eslint-disable-next-line no-console
+    console.debug(`[fathom] (dev) download_gate_opened @ ${ctx.location} — ${ctx.company}`);
+  }
+  trackEvent("download_gate_opened");
+  if (slug) trackEvent(`download_gate_opened_${slug}`);
+}
+
+/** Track a successful email submission in the download gate. */
+export function trackDownloadEmailSubmitted(ctx: TrackContext): void {
+  const slug = toSafeEventName(ctx.slug);
+  if (isDev) {
+    // eslint-disable-next-line no-console
+    console.debug(`[fathom] (dev) download_email_submitted @ ${ctx.location} — ${ctx.company}`);
+  }
+  trackEvent("download_email_submitted");
+  if (slug) trackEvent(`download_email_submitted_${slug}`);
+}
+
+/** Track an invalid email entered in the download gate (failed client validation). */
+export function trackDownloadEmailInvalid(ctx: TrackContext): void {
+  const slug = toSafeEventName(ctx.slug);
+  if (isDev) {
+    // eslint-disable-next-line no-console
+    console.debug(`[fathom] (dev) download_email_invalid @ ${ctx.location} — ${ctx.company}`);
+  }
+  trackEvent("download_email_invalid");
+  if (slug) trackEvent(`download_email_invalid_${slug}`);
+}
+
+/** Track a failed email submission in the download gate. */
+export function trackDownloadEmailFailed(ctx: TrackContext): void {
+  const slug = toSafeEventName(ctx.slug);
+  if (isDev) {
+    // eslint-disable-next-line no-console
+    console.debug(`[fathom] (dev) download_email_failed @ ${ctx.location} — ${ctx.company}`);
+  }
+  trackEvent("download_email_failed");
+  if (slug) trackEvent(`download_email_failed_${slug}`);
+}
+
+/**
+ * Track the final, revealed download click after the email gate.
+ * Fires the existing download events (so prior analytics keep working) PLUS
+ * the new gated-completion events.
+ */
+export function trackGatedDownloadCompleted(ctx: TrackContext): void {
+  // Existing events: infographic_download_clicked + download_<slug>
+  trackInfographicDownload(ctx);
+  // New events
+  const slug = toSafeEventName(ctx.slug);
+  trackEvent("gated_download_completed");
+  if (slug) trackEvent(`gated_download_completed_${slug}`);
+}

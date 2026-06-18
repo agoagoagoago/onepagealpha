@@ -33,6 +33,46 @@ backend, no database.
 Request CTAs link to `/request` from the homepage, the library, every company
 page (with the company prefilled into tracking), and the footer.
 
+## Download email capture setup
+
+Infographic downloads are **email-gated**: clicking any "Download" CTA (or the
+infographic image) opens a modal that captures the visitor's email via Formspree
+before revealing the download link. Buy Me a Coffee and Request a Company are NOT
+gated. Uses a **separate** Formspree form from `/request` so it can have its own
+Autoresponse.
+
+1. Create a **separate** Formspree form for infographic downloads (not the
+   request form).
+2. Set `NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT` to that form's endpoint
+   (locally in `.env.local`, in production via Vercel env vars). Also set
+   `NEXT_PUBLIC_SITE_URL` so the emailed link is absolute.
+3. Ensure the submitted field is named exactly `email` (the gate already sends it
+   that way) so Formspree can reply to the submitter.
+4. In the Formspree form settings, enable **Autoresponse**.
+5. Suggested autoresponse **subject**:
+   `Your OnePage Alpha infographic download`
+6. Suggested autoresponse **body** (Formspree supports submitted fields in the
+   template on supported plans):
+   `Thanks for requesting the OnePage Alpha visual brief for {{ company_name }}. You can download it here: {{ download_url }}. This content is educational only and not financial advice.`
+7. **Redeploy** after setting the environment variables in Vercel.
+
+Without `NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT`, the gate shows a helpful
+developer notice and the submit button is disabled — it never crashes. The
+download is only revealed after a successful submission.
+
+Fields submitted to the download form: `email`, `newsletter_opt_in`,
+`company_name`, `company_slug`, `ticker`, `exchange`, `report_title`,
+`download_url`, `source_page`, `_subject`.
+
+### Privacy / compliance (not legal advice)
+
+- Ensure compliance with applicable email-marketing and privacy laws (e.g.
+  GDPR/PDPA/CAN-SPAM) for your audience.
+- Only email users who consented to updates (the opt-in checkbox).
+- Keep your Formspree submission records secure.
+- Add a privacy policy before scaling email collection.
+  (`TODO: Add a privacy policy page before scaling email collection.`)
+
 ## Add a new company brief
 
 1. Add the preview image to `public/infographics/<slug>-<year>.png`

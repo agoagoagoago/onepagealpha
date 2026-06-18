@@ -2,20 +2,21 @@ import Link from "next/link";
 import type { Company } from "@/data/companies";
 import { formatReportDate } from "@/lib/companies";
 import ImageWithFallback from "./ImageWithFallback";
-import TrackedDownloadLink from "./TrackedDownloadLink";
+import GatedDownload, { type GateLocation } from "./GatedDownload";
 import Tag from "./Tag";
 
 /**
  * A single company brief card, used in the library grid and "related briefs".
- * The whole card links to the company page; the Download button tracks its own
- * Fathom event (location is configurable so the same card works everywhere).
+ * The whole card links to the company page; the Download button opens the
+ * email-gated download flow (location is configurable so the card works
+ * everywhere). Only the Download CTA is gated — "View Brief" is not.
  */
 export default function CompanyCard({
   company,
   downloadLocation = "companies_library_card",
 }: {
   company: Company;
-  downloadLocation?: string;
+  downloadLocation?: GateLocation;
 }) {
   const href = `/companies/${company.slug}`;
 
@@ -79,17 +80,13 @@ export default function CompanyCard({
           >
             View Brief
           </Link>
-          <TrackedDownloadLink
-            href={company.downloadFile}
-            company={company.name}
-            slug={company.slug}
-            ticker={company.ticker}
-            exchange={company.exchange}
+          <GatedDownload
+            company={company}
             location={downloadLocation}
+            triggerVariant="secondary"
+            triggerLabel="Download"
             className="inline-flex items-center justify-center rounded-full border border-line bg-paper px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-          >
-            Download
-          </TrackedDownloadLink>
+          />
         </div>
       </div>
     </article>
