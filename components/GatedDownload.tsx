@@ -226,7 +226,10 @@ export default function GatedDownload({
                 <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
                   {company.ticker} · {company.exchange}
                 </p>
-                <h2 id="gate-title" className="mt-2 font-serif text-2xl text-ink">
+                <h2
+                  id="gate-title"
+                  className="mt-2 font-sans text-2xl font-semibold tracking-tight text-ink"
+                >
                   Your download is ready
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
@@ -247,13 +250,14 @@ export default function GatedDownload({
             ) : (
               // ---- Email capture form ----
               <div>
-                <h2 id="gate-title" className="font-serif text-2xl text-ink">
+                <h2
+                  id="gate-title"
+                  className="font-sans text-2xl font-semibold tracking-tight text-ink"
+                >
                   Get the free infographic
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Enter your email to download this OnePage Alpha visual brief. I
-                  may also send occasional updates when new company briefs are
-                  published.
+                  Enter your email to download this OnePage Alpha visual brief.
                 </p>
 
                 {/* Missing-endpoint developer notice */}
