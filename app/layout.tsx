@@ -71,9 +71,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // --- Fathom Analytics configuration --------------------------------------
-  // Site ID comes from an env var so the repo stays free of secrets.
-  // (See .env.example — set this in Vercel for production.)
-  const fathomSiteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID;
+  // Site ID: defaults to the live OnePage Alpha site ("RAWISURF"), but can be
+  // overridden via the NEXT_PUBLIC_FATHOM_SITE_ID env var (e.g. for staging).
+  const fathomSiteId =
+    process.env.NEXT_PUBLIC_FATHOM_SITE_ID || "RAWISURF";
   // Optional custom script domain; defaults to the official Fathom CDN.
   const fathomScriptUrl =
     process.env.NEXT_PUBLIC_FATHOM_SCRIPT_URL ||
