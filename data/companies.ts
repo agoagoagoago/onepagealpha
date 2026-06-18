@@ -88,6 +88,32 @@ export const companies: Company[] = [
     isFeatured: true,
   },
   {
+    slug: "koh-brothers-eco-engineering",
+    name: "Koh Brothers Eco Engineering",
+    ticker: "5HV",
+    exchange: "SGX",
+    market: "Singapore",
+    sector: "Construction & Engineering",
+    reportTitle:
+      "Koh Brothers Eco Engineering: FY2025 Performance & Risk Dashboard",
+    summary:
+      "A visual brief on Koh Brothers Eco Engineering's FY2025 performance and risks — covering its engineering & construction and bio-refinery (Oiltek) segments, segment profitability, financial and balance-sheet health, cash flow, order book visibility, and accounting and disclosure observations.",
+    reportDate: "2026-06-01",
+    tags: [
+      "Construction & Engineering",
+      "Bio-Refinery",
+      "Cash Flow",
+      "Order Book",
+      "Accounting Observations",
+      "Key Risks",
+      "SGX",
+    ],
+    // Real infographic (compressed JPEG, full res) at public/infographics/koh-brothers-eco-engineering-june-2026.jpg
+    infographicImage: "/infographics/koh-brothers-eco-engineering-june-2026.jpg",
+    // Real downloadable PDF at public/downloads/koh-brothers-eco-engineering-june-2026.pdf
+    downloadFile: "/downloads/koh-brothers-eco-engineering-june-2026.pdf",
+  },
+  {
     slug: "sample-company",
     name: "Sample Company Ltd.",
     ticker: "SMPL",

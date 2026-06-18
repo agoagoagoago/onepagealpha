@@ -1,8 +1,9 @@
 Put downloadable company files here (PDF recommended).
 
 Naming convention (must match `downloadFile` in data/companies.ts):
-  ix-biopharma-june-2026.pdf           (real download)
-  addvalue-technologies-june-2026.pdf  (real download)
+  ix-biopharma-june-2026.pdf                  (real download)
+  addvalue-technologies-june-2026.pdf         (real download)
+  koh-brothers-eco-engineering-june-2026.pdf  (real download)
   sample-company-2026.pdf
 
 Until a real file is added, the Download buttons will 404 on click, but the
