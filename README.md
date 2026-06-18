@@ -14,6 +14,7 @@ support button, tracked with Fathom Analytics.
 - `/companies` — library of all company visual briefs (with a tag filter)
 - `/companies/[slug]` — individual company brief (shareable URL)
 - `/request` — "Request a Company" form (emails via Resend)
+- `/contact` — general "Contact Us" form (emails via Resend)
 
 All briefs are read from one file: **`data/companies.ts`**.
 
@@ -25,6 +26,8 @@ All briefs are read from one file: **`data/companies.ts`**.
   the download link, optional owner notification).
 - **Request a Company form** (`/request`) → `/api/request-company` (emails the
   owner the request, plus a confirmation to the requester if they gave an email).
+- **Contact form** (`/contact`) → `/api/contact` (emails the owner the message,
+  plus a confirmation to the sender).
 - `RESEND_API_KEY` is **server-only** — it must **not** be prefixed with
   `NEXT_PUBLIC_` and is never sent to the browser.
 
@@ -46,11 +49,21 @@ validates server-side and sends email via Resend. Buy Me a Coffee is not gated.
 5. **Redeploy** after setting env vars, then send one real download and one real
    request on production and confirm both in the Resend dashboard logs.
 
-If `RESEND_API_KEY` (or, for requests, `RESEND_OWNER_EMAIL`) is missing, the API
-routes return a safe error and the UI shows a friendly retry message — they
-never crash or leak the key. Both routes apply a best-effort in-memory rate
+If `RESEND_API_KEY` (or, for requests/contact, `RESEND_OWNER_EMAIL`) is missing,
+the API routes return a safe error and the UI shows a friendly retry message —
+they never crash or leak the key. All routes apply a best-effort in-memory rate
 limit (5/IP and 3/email per 10 min); for production-scale limiting use a shared
 store (Upstash Redis / Vercel KV).
+
+### Contact form
+
+`/contact` is a general enquiry form (feedback, corrections, custom briefs,
+partnerships, IR/agency, media, technical issues). It POSTs to `/api/contact`,
+which validates server-side and uses **Resend** to email the owner the message
+plus a confirmation to the sender. No Formspree is used. Required env vars:
+`RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_OWNER_EMAIL` (required for
+contact), `NEXT_PUBLIC_SITE_URL`. `/request` stays dedicated to company-coverage
+suggestions; `/contact` is for everything else.
 6. **Redeploy** after setting env vars.
 7. Test one real download on production.
 8. Check the Resend dashboard logs to confirm the user email (and owner notification) were sent.

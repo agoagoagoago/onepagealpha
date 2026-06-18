@@ -160,6 +160,30 @@ export function trackRequestCompanyInvalid(): void {
 }
 
 // ---------------------------------------------------------------------------
+// Contact form tracking
+// ---------------------------------------------------------------------------
+
+/** Track that the visitor started filling in the contact form (once per page). */
+export function trackContactFormStarted(): void {
+  trackEvent("contact_form_started");
+}
+
+/** Track a contact form submission blocked by client-side validation. */
+export function trackContactFormInvalid(): void {
+  trackEvent("contact_form_invalid");
+}
+
+/** Track a successful contact form submission. */
+export function trackContactFormSubmitted(): void {
+  trackEvent("contact_form_submitted");
+}
+
+/** Track a failed contact form submission. */
+export function trackContactFormFailed(): void {
+  trackEvent("contact_form_failed");
+}
+
+// ---------------------------------------------------------------------------
 // Email-gated download tracking
 // ---------------------------------------------------------------------------
 

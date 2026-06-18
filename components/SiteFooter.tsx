@@ -35,6 +35,9 @@ export default function SiteFooter() {
             >
               Request a Company
             </RequestCompanyLink>
+            <Link href="/contact" className="text-ink-soft transition-colors hover:text-gold">
+              Contact
+            </Link>
             {/* Footer download points to the featured company and tracks its slug. */}
             <GatedDownload
               company={featured}

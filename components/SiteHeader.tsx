@@ -23,6 +23,9 @@ export default function SiteHeader() {
           <Link href="/companies" className="text-ink-soft transition-colors hover:text-gold">
             Companies
           </Link>
+          <Link href="/contact" className="text-ink-soft transition-colors hover:text-gold">
+            Contact
+          </Link>
           {/* Support link tracks against the featured company. */}
           <TrackedExternalLink
             href={featured.buyMeACoffeeUrl}
