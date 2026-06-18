@@ -33,43 +33,51 @@ backend, no database.
 Request CTAs link to `/request` from the homepage, the library, every company
 page (with the company prefilled into tracking), and the footer.
 
-## Download email capture setup
+## Email providers at a glance
+
+- **Resend** powers the **email-gated infographic downloads** (via the
+  `/api/download-request` API route).
+- **Formspree** powers **only** the "Request a Company" form (`/request`).
+- `RESEND_API_KEY` is **server-only** — it must **not** be prefixed with
+  `NEXT_PUBLIC_` and is never sent to the browser.
+
+## Resend download email setup
 
 Infographic downloads are **email-gated**: clicking any "Download" CTA (or the
-infographic image) opens a modal that captures the visitor's email via Formspree
-before revealing the download link. Buy Me a Coffee and Request a Company are NOT
-gated. Uses a **separate** Formspree form from `/request` so it can have its own
-Autoresponse.
+infographic image) opens a modal that captures the visitor's email. The client
+POSTs to `/api/download-request`, which validates server-side, emails the
+visitor the download link via Resend (and optionally notifies the owner), then
+the modal reveals the immediate download button. Buy Me a Coffee and Request a
+Company are NOT gated.
 
-1. Create a **separate** Formspree form for infographic downloads (not the
-   request form).
-2. Set `NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT` to that form's endpoint
-   (locally in `.env.local`, in production via Vercel env vars). Also set
-   `NEXT_PUBLIC_SITE_URL` so the emailed link is absolute.
-3. Ensure the submitted field is named exactly `email` (the gate already sends it
-   that way) so Formspree can reply to the submitter.
-4. In the Formspree form settings, enable **Autoresponse**.
-5. Suggested autoresponse **subject**:
-   `Your OnePage Alpha infographic download`
-6. Suggested autoresponse **body** (Formspree supports submitted fields in the
-   template on supported plans):
-   `Thanks for requesting the OnePage Alpha visual brief for {{ company_name }}. You can download it here: {{ download_url }}. This content is educational only and not financial advice.`
-7. **Redeploy** after setting the environment variables in Vercel.
+1. Create a [Resend](https://resend.com) account.
+2. Verify the sending domain (ideally `onepagealpha.com`).
+3. Create a Resend API key.
+4. Add env vars in Vercel (Project → Settings → Environment Variables):
+   - `RESEND_API_KEY` — server-only secret (no `NEXT_PUBLIC_` prefix)
+   - `RESEND_FROM_EMAIL` — e.g. `OnePage Alpha <hello@onepagealpha.com>`
+     (must be on the verified domain; falls back to `onboarding@resend.dev` for testing)
+   - `RESEND_OWNER_EMAIL` — optional; receives an internal notification per download
+   - `NEXT_PUBLIC_SITE_URL` — e.g. `https://onepagealpha.com` (used to build the absolute download link)
+5. Keep the Formspree env var only for the request form:
+   `NEXT_PUBLIC_FORMSPREE_ENDPOINT`.
+6. **Redeploy** after setting env vars.
+7. Test one real download on production.
+8. Check the Resend dashboard logs to confirm the user email (and owner notification) were sent.
+9. Check Fathom for the download events (see below).
 
-Without `NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT`, the gate shows a helpful
-developer notice and the submit button is disabled — it never crashes. The
-download is only revealed after a successful submission.
-
-Fields submitted to the download form: `email`, `newsletter_opt_in`,
-`company_name`, `company_slug`, `ticker`, `exchange`, `report_title`,
-`download_url`, `source_page`, `_subject`.
+If `RESEND_API_KEY` is missing, the API route returns a safe error
+("Email service is not configured.") and the modal shows a friendly retry
+message — it never crashes or leaks the key. The API route also applies a
+best-effort in-memory rate limit (5/IP and 3/email per 10 min); for
+production-scale limiting use a shared store (Upstash Redis / Vercel KV).
 
 ### Privacy / compliance (not legal advice)
 
 - Ensure compliance with applicable email-marketing and privacy laws (e.g.
   GDPR/PDPA/CAN-SPAM) for your audience.
 - Only email users who consented to updates (the opt-in checkbox).
-- Keep your Formspree submission records secure.
+- Keep your Resend logs and recipient data secure.
 - Add a privacy policy before scaling email collection.
   (`TODO: Add a privacy policy page before scaling email collection.`)
 

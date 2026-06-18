@@ -10,22 +10,13 @@ import {
   type TrackContext,
 } from "@/lib/fathom";
 
-// Basic email shape check (intentionally simple — Formspree validates further).
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Gated downloads are powered by a Resend-backed API route (NOT Formspree).
+// The server sends the user the download link by email and reveals the
+// immediate download here. ("Request a Company" still uses Formspree.)
+const DOWNLOAD_API = "/api/download-request";
 
-// Separate Formspree endpoint for gated downloads (NOT the /request endpoint).
-// See README "Download email capture setup". Missing => graceful notice.
-//
-// FORMSPREE AUTORESPONSE: In Formspree, enable Autoresponse for THIS download
-// form and make sure the form includes a field named `email` (it does — see the
-// submit below). Use the submitted `download_url`, `company_name`, and
-// `report_title` fields in the autoresponse template if supported by your
-// Formspree plan/settings.
-//
-// TODO: Add a privacy policy page before scaling email collection.
-const DOWNLOAD_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT;
-// Absolute site URL so the autoresponse can link to a downloadable file.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+// Basic email shape check (intentionally simple — the server validates again).
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 type GateCompany = {
   slug: string;
@@ -84,6 +75,9 @@ export default function GatedDownload({
   const [optIn, setOptIn] = useState(true); // default checked
   const [status, setStatus] = useState<Status>("idle");
   const [validationError, setValidationError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  // The download URL returned by the API (falls back to the local file path).
+  const [downloadUrl, setDownloadUrl] = useState(company.downloadFile);
   const emailRef = useRef<HTMLInputElement>(null);
 
   // Shared tracking context for this company + location.
@@ -97,6 +91,8 @@ export default function GatedDownload({
 
   function openGate() {
     setStatus("idle");
+    setValidationError("");
+    setErrorMessage("");
     setOpen(true);
     trackDownloadGateOpened(ctx);
   }
@@ -114,7 +110,6 @@ export default function GatedDownload({
     document.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    // Focus the input once the dialog is mounted.
     const t = window.setTimeout(() => emailRef.current?.focus(), 50);
     return () => {
       document.removeEventListener("keydown", onKey);
@@ -125,7 +120,6 @@ export default function GatedDownload({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!DOWNLOAD_ENDPOINT) return; // safety net; submit is disabled anyway
 
     // Normalize, then validate before doing anything else.
     const normalizedEmail = email.trim().toLowerCase();
@@ -139,46 +133,49 @@ export default function GatedDownload({
       setValidationError("Please enter a valid email address.");
       trackDownloadEmailInvalid(ctx);
       emailRef.current?.focus();
-      return; // do NOT submit to Formspree
+      return; // do NOT call the API
     }
     setValidationError("");
-
+    setErrorMessage("");
     setStatus("submitting");
+
     try {
-      const downloadUrl = SITE_URL
-        ? `${SITE_URL}${company.downloadFile}`
-        : company.downloadFile; // fallback to relative path
       const sourcePage =
         typeof window !== "undefined" ? window.location.pathname : location;
 
-      const fd = new FormData();
-      // IMPORTANT: the field MUST be named exactly `email` so Formspree
-      // Autoresponse can reply to the submitter. We send the normalized value.
-      fd.append("email", normalizedEmail);
-      fd.append("newsletter_opt_in", optIn ? "yes" : "no");
-      fd.append("company_name", company.name);
-      fd.append("company_slug", company.slug);
-      fd.append("ticker", company.ticker);
-      fd.append("exchange", company.exchange);
-      fd.append("report_title", company.reportTitle);
-      fd.append("download_url", downloadUrl);
-      fd.append("source_page", sourcePage);
-      fd.append("_subject", "New OnePage Alpha infographic download");
-
-      const res = await fetch(DOWNLOAD_ENDPOINT, {
+      const res = await fetch(DOWNLOAD_API, {
         method: "POST",
-        body: fd,
-        headers: { Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: normalizedEmail,
+          newsletterOptIn: optIn,
+          companyName: company.name,
+          companySlug: company.slug,
+          ticker: company.ticker,
+          exchange: company.exchange,
+          reportTitle: company.reportTitle,
+          downloadFile: company.downloadFile,
+          sourcePage,
+        }),
       });
 
-      if (res.ok) {
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; message?: string; downloadUrl?: string }
+        | null;
+
+      if (res.ok && data?.ok) {
+        if (data.downloadUrl) setDownloadUrl(data.downloadUrl);
         setStatus("success");
         trackDownloadEmailSubmitted(ctx);
       } else {
+        setErrorMessage(
+          data?.message || "Unable to send the download email right now. Please try again.",
+        );
         setStatus("error");
         trackDownloadEmailFailed(ctx);
       }
     } catch {
+      setErrorMessage("Unable to send the download email right now. Please try again.");
       setStatus("error");
       trackDownloadEmailFailed(ctx);
     }
@@ -233,12 +230,12 @@ export default function GatedDownload({
                   Your download is ready
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  Thanks — you can download the infographic now. A copy of the
-                  link may also be sent to your email.
+                  Thanks — the download link has been sent to your email. You can
+                  also download the infographic now.
                 </p>
                 <div className="mt-6">
                   <a
-                    href={company.downloadFile}
+                    href={downloadUrl}
                     download
                     onClick={() => trackGatedDownloadCompleted(ctx)}
                     className="inline-flex w-full items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
@@ -257,29 +254,17 @@ export default function GatedDownload({
                   Get the free infographic
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Enter your email to download this OnePage Alpha visual brief.
+                  Enter your email to receive the download link and unlock the
+                  PDF immediately.
                 </p>
-
-                {/* Missing-endpoint developer notice */}
-                {!DOWNLOAD_ENDPOINT && (
-                  <p
-                    role="status"
-                    className="mt-4 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink-soft"
-                  >
-                    Download email capture endpoint is not configured yet. Add{" "}
-                    <code className="font-mono text-ink">
-                      NEXT_PUBLIC_FORMSPREE_DOWNLOAD_ENDPOINT
-                    </code>{" "}
-                    to your environment variables.
-                  </p>
-                )}
 
                 {status === "error" && (
                   <p
                     role="alert"
                     className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
                   >
-                    Something went wrong. Please try again.
+                    {errorMessage ||
+                      "Unable to send the download email right now. Please try again."}
                   </p>
                 )}
 
@@ -298,7 +283,6 @@ export default function GatedDownload({
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
-                      // Clear the validation error as soon as the user edits.
                       if (validationError) setValidationError("");
                     }}
                     aria-invalid={validationError ? true : undefined}
@@ -306,11 +290,7 @@ export default function GatedDownload({
                     className={inputClass}
                   />
                   {validationError && (
-                    <p
-                      id="gate-email-error"
-                      role="alert"
-                      className="mt-2 text-sm text-red-700"
-                    >
+                    <p id="gate-email-error" role="alert" className="mt-2 text-sm text-red-700">
                       {validationError}
                     </p>
                   )}
@@ -332,7 +312,7 @@ export default function GatedDownload({
 
                   <button
                     type="submit"
-                    disabled={submitting || !DOWNLOAD_ENDPOINT}
+                    disabled={submitting}
                     className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {submitting ? "Sending…" : "Continue to Download"}
