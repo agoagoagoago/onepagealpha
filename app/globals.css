@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Smooth-scroll for the in-page "Support the work" anchor link. */
+    scroll-behavior: smooth;
+    /* Offset so anchored sections aren't hidden under the sticky header. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+    /* Subtle font smoothing for an editorial feel. */
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible, on-brand keyboard focus states for accessibility. */
+  :focus-visible {
+    outline: 2px solid theme("colors.gold");
+    outline-offset: 2px;
+  }
+}
