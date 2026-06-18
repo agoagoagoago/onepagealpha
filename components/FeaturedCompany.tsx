@@ -2,13 +2,12 @@ import Link from "next/link";
 import type { Company } from "@/data/companies";
 import { formatReportDate } from "@/lib/companies";
 import InfographicPreview from "./InfographicPreview";
-import GatedDownload from "./GatedDownload";
-import TrackedExternalLink from "./TrackedExternalLink";
 import Tag from "./Tag";
 
 /**
- * Homepage featured brief: company metadata + CTAs on one side, the infographic
- * preview on the other. All tracking uses location "homepage_featured".
+ * Homepage featured brief: company metadata + a single "View Full Brief" CTA on
+ * one side, the infographic preview on the other. Download and support live on
+ * the full brief page this links to.
  */
 export default function FeaturedCompany({ company }: { company: Company }) {
   return (
@@ -50,30 +49,13 @@ export default function FeaturedCompany({ company }: { company: Company }) {
             ))}
           </div>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-8">
             <Link
               href={`/companies/${company.slug}`}
               className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
             >
               View Full Brief
             </Link>
-            <GatedDownload
-              company={company}
-              location="homepage_featured"
-              triggerVariant="secondary"
-              triggerLabel="Download Infographic"
-            />
-            <TrackedExternalLink
-              href={company.buyMeACoffeeUrl}
-              company={company.name}
-              slug={company.slug}
-              ticker={company.ticker}
-              exchange={company.exchange}
-              location="homepage_featured"
-              className="inline-flex items-center justify-center rounded-full px-7 py-3 text-sm font-medium text-ink-soft transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
-            >
-              Buy Me a Coffee
-            </TrackedExternalLink>
           </div>
         </div>
 
