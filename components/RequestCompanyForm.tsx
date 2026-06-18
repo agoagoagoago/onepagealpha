@@ -340,7 +340,7 @@ export default function RequestCompanyForm() {
           <textarea
             id="message"
             rows={4}
-            placeholder="Tell me why this company is interesting or what you want the brief to examine."
+            placeholder="Tell us why this company is interesting or what you want the brief to examine."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className={`${inputClass} resize-y`}
