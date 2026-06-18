@@ -25,6 +25,12 @@ const sans = Inter({
 // Change the production URL here if your domain ever changes.
 const SITE_URL = "https://onepagealpha.com";
 
+// TODO: Add square favicon/icon version of the OnePage Alpha logo.
+// The brand logo (public/brand/Logo_OnePage_Alpha.png) is a wide ~3:1 lockup,
+// so it's NOT suitable as a favicon. Once a square icon exists, add it via an
+// `icons` field here (or app/icon.png). OG images stay as the company
+// infographic below, which is more suitable for social sharing.
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "OnePage Alpha",

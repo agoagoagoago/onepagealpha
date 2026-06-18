@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getFeaturedCompany } from "@/lib/companies";
+import BrandLogo from "./BrandLogo";
 import Disclaimer from "./Disclaimer";
 import TrackedDownloadLink from "./TrackedDownloadLink";
 import TrackedExternalLink from "./TrackedExternalLink";
@@ -14,8 +15,9 @@ export default function SiteFooter() {
       <div className="mx-auto max-w-content px-6 py-14">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-sm">
-            <p className="font-serif text-lg text-ink">OnePage Alpha</p>
-            <p className="mt-2 text-sm text-ink-soft">
+            {/* Smaller footer logo (sits on the white footer surface). */}
+            <BrandLogo className="h-auto w-[160px]" />
+            <p className="mt-3 text-sm text-ink-soft">
               Visual annual report intelligence for busy investors.
             </p>
           </div>

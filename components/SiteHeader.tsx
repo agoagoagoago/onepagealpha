@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getFeaturedCompany } from "@/lib/companies";
+import BrandLogo from "./BrandLogo";
 import TrackedExternalLink from "./TrackedExternalLink";
 
 /** Minimal shared header used on every page. */
@@ -11,9 +12,11 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-content items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="font-serif text-lg font-medium tracking-tight text-ink"
+          aria-label="OnePage Alpha home"
+          className="inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
         >
-          OnePage Alpha
+          {/* Logo above the fold -> priority. Responsive width, height auto, no distortion. */}
+          <BrandLogo priority className="h-auto w-[150px] sm:w-[190px]" />
         </Link>
 
         <nav className="flex items-center gap-5 text-sm">
