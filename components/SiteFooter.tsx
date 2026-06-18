@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getFeaturedCompany } from "@/lib/companies";
 import BrandLogo from "./BrandLogo";
 import Disclaimer from "./Disclaimer";
-import GatedDownload from "./GatedDownload";
 import TrackedExternalLink from "./TrackedExternalLink";
 import RequestCompanyLink from "./RequestCompanyLink";
 
@@ -38,14 +37,6 @@ export default function SiteFooter() {
             <Link href="/contact" className="text-ink-soft transition-colors hover:text-gold">
               Contact
             </Link>
-            {/* Footer download points to the featured company and tracks its slug. */}
-            <GatedDownload
-              company={featured}
-              location="footer"
-              triggerVariant="text"
-              triggerLabel="Download Featured Infographic"
-              className="text-sm text-ink-soft transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-            />
             <TrackedExternalLink
               href={featured.buyMeACoffeeUrl}
               company={featured.name}
