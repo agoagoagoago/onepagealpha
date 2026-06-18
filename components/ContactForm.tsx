@@ -163,7 +163,7 @@ export default function ContactForm() {
           role="status"
           className="mb-6 rounded-lg border border-line bg-paper px-4 py-3 text-sm text-ink"
         >
-          Thanks — your message has been sent. I’ll review it and reply if a
+          Thanks — your message has been sent. We’ll review it and reply if a
           response is needed.
         </p>
       )}

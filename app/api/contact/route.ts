@@ -173,14 +173,14 @@ export async function POST(req: Request) {
   // --- Confirmation email to the requester (best-effort; never fails request) ---
   const confirmHtml = `
     <p>Thanks for contacting OnePage Alpha.</p>
-    <p>Your message has been received. I’ll review it and reply if a response is needed.</p>
+    <p>Your message has been received. We’ll review it and reply if a response is needed.</p>
     <p>This is a copy of your enquiry:<br/>Type: ${escapeHtml(enquiryType)}<br/>Subject: ${escapeHtml(subject)}</p>
     <p>OnePage Alpha is an educational project. Nothing here is financial advice, investment advice, or a recommendation to buy, sell, or hold any security.</p>
     <p>OnePage Alpha<br/>Visual annual report intelligence for busy investors.</p>
   `.trim();
   const confirmText = `Thanks for contacting OnePage Alpha.
 
-Your message has been received. I’ll review it and reply if a response is needed.
+Your message has been received. We’ll review it and reply if a response is needed.
 
 This is a copy of your enquiry:
 Type: ${enquiryType}
