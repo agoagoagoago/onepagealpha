@@ -239,7 +239,7 @@ export default function RequestCompanyForm() {
           {/* Company (required) */}
           <div>
             <label htmlFor="company" className={labelClass}>
-              Company name <span className="text-gold">*</span>
+              Requested Company Name <span className="text-gold">*</span>
             </label>
             <input
               id="company"
