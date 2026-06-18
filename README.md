@@ -8,22 +8,49 @@ support button, tracked with Fathom Analytics.
 
 ---
 
+## Information architecture
+
+- `/` — homepage: hero + featured company brief + library teaser
+- `/companies` — library of all company visual briefs (with a tag filter)
+- `/companies/[slug]` — individual company brief (shareable URL)
+
+All briefs are read from one file: **`data/companies.ts`**.
+
+## Add a new company brief
+
+1. Add the preview image to `public/infographics/<slug>-<year>.png`
+2. Add the downloadable file to `public/downloads/<slug>-<year>.pdf`
+3. Add one object to the `companies` array in `data/companies.ts`
+
+That's it — homepage, library, the new `/companies/<slug>` page, related briefs,
+and SEO metadata all update automatically. No database, no CMS.
+
+> If an image or download file is missing, the page shows a graceful placeholder
+> and the layout stays intact — nothing crashes.
+
 ## What to edit later
 
 | What | Where |
 | --- | --- |
-| Infographic file | Replace `public/onepagealpha-sample-infographic.png` |
-| Infographic path / download name | `lib/config.ts` |
-| Buy Me a Coffee URL | `lib/config.ts` (`BUY_ME_A_COFFEE_URL`) |
+| Companies (the whole catalog) | `data/companies.ts` |
+| Featured company | set `isFeatured: true` on one company in `data/companies.ts` |
+| Default Buy Me a Coffee URL | `lib/config.ts` (`BUY_ME_A_COFFEE_URL`) |
+| Per-company support URL | optional `buyMeACoffeeUrl` field per company |
 | Fathom Site ID | env var `NEXT_PUBLIC_FATHOM_SITE_ID` |
 | Custom Fathom domain (optional) | env var `NEXT_PUBLIC_FATHOM_SCRIPT_URL` |
 | Brand colors | `tailwind.config.ts` |
-| Page copy / sections | `app/page.tsx` |
+| "What this brief covers" copy | `components/CoverageGrid.tsx` |
 
 ## Tracked Fathom events
 
-- `infographic_download_clicked`
-- `buy_me_a_coffee_clicked`
+Each action fires **two** events — a general one and a company-specific one:
+
+- `infographic_download_clicked` + `download_<slug>` (e.g. `download_ix-biopharma`)
+- `buy_me_a_coffee_clicked` + `coffee_<slug>` (e.g. `coffee_ix-biopharma`)
+
+Helpers live in `lib/fathom.ts` (`trackInfographicDownload` / `trackBuyMeACoffee`),
+take a `{ company, slug, ticker, exchange, location }` context, use
+`window.fathom.trackEvent` (never `trackGoal`), and fail silently if Fathom isn't loaded.
 
 > ⚠️ Fathom custom events often do **not** fire on `localhost`. Do final event
 > verification **after** deploying to Vercel over HTTPS, by watching the Fathom dashboard.

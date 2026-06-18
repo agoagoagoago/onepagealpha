@@ -1,37 +1,40 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  INFOGRAPHIC_PATH,
-  INFOGRAPHIC_DOWNLOAD_NAME,
-} from "@/lib/config";
-import { trackInfographicDownload } from "@/lib/fathom";
+import { trackInfographicDownload, type TrackContext } from "@/lib/fathom";
 
 /**
- * An anchor that downloads the infographic from /public AND tracks the click.
+ * Anchor that downloads a company's infographic file AND tracks the click.
  *
- * Tracking fires FIRST (synchronously) on click, then the browser proceeds
- * with the normal `download` behavior.
+ * Tracking fires FIRST on click, then the browser proceeds with the normal
+ * `download` behavior. If the file is missing the browser simply 404s — the
+ * surrounding layout is never affected.
  */
 export default function TrackedDownloadLink({
+  href,
+  company,
+  slug,
+  ticker,
+  exchange,
   location,
   className,
   children,
   ariaLabel,
-}: {
-  /** Where the click happened, e.g. "hero" — sent to Fathom context/dev logs. */
-  location: string;
+}: TrackContext & {
+  /** Path to the downloadable file, e.g. "/downloads/ix-biopharma-2026.pdf". */
+  href: string;
   className?: string;
   children: ReactNode;
   ariaLabel?: string;
 }) {
   return (
     <a
-      href={INFOGRAPHIC_PATH}
-      // The `download` attribute makes the browser save the file instead of
-      // navigating to it. The value is the suggested filename.
-      download={INFOGRAPHIC_DOWNLOAD_NAME}
-      onClick={() => trackInfographicDownload(location)}
+      href={href}
+      // `download` makes the browser save the file instead of navigating to it.
+      download
+      onClick={() =>
+        trackInfographicDownload({ company, slug, ticker, exchange, location })
+      }
       className={className}
       aria-label={ariaLabel}
     >

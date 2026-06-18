@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import Script from "next/script";
-import { INFOGRAPHIC_PATH } from "@/lib/config";
+import { getFeaturedCompany } from "@/lib/companies";
 import "./globals.css";
+
+// Default social-share image = the current featured company's infographic.
+const featuredOgImage = getFeaturedCompany().infographicImage;
 
 // --- Fonts (self-hosted by next/font, no runtime network cost) -------------
 const serif = Fraunces({
@@ -36,11 +39,10 @@ export const metadata: Metadata = {
     title: "OnePage Alpha",
     description:
       "Download a free annual report infographic and support independent visual financial research.",
-    // Uses the infographic as the share image. Replace the file in /public to update.
     images: [
       {
-        url: INFOGRAPHIC_PATH,
-        alt: "OnePage Alpha sample infographic.",
+        url: featuredOgImage,
+        alt: "OnePage Alpha visual brief.",
       },
     ],
   },
@@ -49,7 +51,7 @@ export const metadata: Metadata = {
     title: "OnePage Alpha",
     description:
       "Download a free annual report infographic and support independent visual financial research.",
-    images: [INFOGRAPHIC_PATH],
+    images: [featuredOgImage],
   },
 };
 
