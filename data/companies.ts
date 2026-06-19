@@ -113,4 +113,31 @@ export const companies: Company[] = [
     // Real downloadable PDF at public/downloads/koh-brothers-eco-engineering-june-2026.pdf
     downloadFile: "/downloads/koh-brothers-eco-engineering-june-2026.pdf",
   },
+  {
+    slug: "mapletree-logistics-trust",
+    name: "Mapletree Logistics Trust",
+    ticker: "M44U",
+    exchange: "SGX",
+    market: "Singapore",
+    sector: "Logistics REIT",
+    reportTitle:
+      "Mapletree Logistics Trust (SGX: M44U): FY2025/26 Performance & Valuation Analysis",
+    summary:
+      "A visual brief on Mapletree Logistics Trust's FY2025/26 performance and valuation — covering its Asia-Pacific logistics portfolio backed by Mapletree/Temasek, the de-rating in distribution per unit (DPU) amid currency headwinds and rising interest costs, gross revenue and aggregate leverage trends, comparative profitability and debt metrics, valuation versus NAV, geographic and concentration risks, and disciplined asset rejuvenation.",
+    reportDate: "2026-06-01",
+    tags: [
+      "Logistics REIT",
+      "Real Estate",
+      "Distribution per Unit",
+      "Leverage",
+      "Asia-Pacific",
+      "Valuation",
+      "Key Risks",
+      "SGX",
+    ],
+    // Real infographic (compressed JPEG, full res) at public/infographics/mapletree-logistics-trust-june-2026.jpg
+    infographicImage: "/infographics/mapletree-logistics-trust-june-2026.jpg",
+    // Real downloadable PDF at public/downloads/mapletree-logistics-trust-june-2026.pdf
+    downloadFile: "/downloads/mapletree-logistics-trust-june-2026.pdf",
+  },
 ];
