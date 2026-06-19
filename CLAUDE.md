@@ -46,9 +46,9 @@ Business model / goals:
 
 ## Companies (current)
 - `ix-biopharma` — iX Biopharma Ltd. (SGX:42C), real June 2026 brief
-- `addvalue-technologies` — Addvalue Technologies Ltd. (SGX:A31), real June 2026 brief, **`isFeatured: true`** (drives homepage featured)
+- `addvalue-technologies` — Addvalue Technologies Ltd. (SGX:A31), real June 2026 brief
 - `koh-brothers-eco-engineering` — Koh Brothers Eco Engineering (SGX:5HV), real June 2026 brief
-- `mapletree-logistics-trust` — Mapletree Logistics Trust (SGX:M44U), real June 2026 brief
+- `mapletree-logistics-trust` — Mapletree Logistics Trust (SGX:M44U), real June 2026 brief, **`isFeatured: true`** (drives homepage featured)
 
 ### How to add / update a company
 1. Add image → `public/infographics/<slug>-<date>.jpg` and PDF → `public/downloads/<slug>-<date>.pdf`.

@@ -85,7 +85,6 @@ export const companies: Company[] = [
     infographicImage: "/infographics/addvalue-technologies-june-2026.jpg",
     // Real downloadable PDF at public/downloads/addvalue-technologies-june-2026.pdf
     downloadFile: "/downloads/addvalue-technologies-june-2026.pdf",
-    isFeatured: true,
   },
   {
     slug: "koh-brothers-eco-engineering",
@@ -139,5 +138,6 @@ export const companies: Company[] = [
     infographicImage: "/infographics/mapletree-logistics-trust-june-2026.jpg",
     // Real downloadable PDF at public/downloads/mapletree-logistics-trust-june-2026.pdf
     downloadFile: "/downloads/mapletree-logistics-trust-june-2026.pdf",
+    isFeatured: true,
   },
 ];
