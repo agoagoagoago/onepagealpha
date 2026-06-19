@@ -138,6 +138,33 @@ export const companies: Company[] = [
     infographicImage: "/infographics/mapletree-logistics-trust-june-2026.jpg",
     // Real downloadable PDF at public/downloads/mapletree-logistics-trust-june-2026.pdf
     downloadFile: "/downloads/mapletree-logistics-trust-june-2026.pdf",
+  },
+  {
+    slug: "sanli-environmental",
+    name: "Sanli Environmental Limited",
+    ticker: "1E3",
+    exchange: "SGX",
+    market: "Singapore",
+    sector: "Environmental Engineering",
+    reportTitle:
+      "Sanli Environmental Limited (SGX: 1E3): FY2026 Financial & Operational Dashboard",
+    summary:
+      "A visual brief on Sanli Environmental's FY2026 financial and operational dashboard — covering its Singapore-based water and waste-management engineering business across its EPC, O&M, and emerging-business segments, revenue drivers and geographic exposure, negative operating cash flow and contract-asset build-up, interest coverage and liquidity stress, key risks and accounting observations, and capital-allocation considerations.",
+    reportDate: "2026-06-20",
+    tags: [
+      "Environmental Engineering",
+      "Water & Waste",
+      "Cash Flow",
+      "Liquidity",
+      "Contract Assets",
+      "Accounting Observations",
+      "Key Risks",
+      "SGX",
+    ],
+    // Real infographic (compressed JPEG, full res) at public/infographics/sanli-environmental-june-2026.jpg
+    infographicImage: "/infographics/sanli-environmental-june-2026.jpg",
+    // Real downloadable PDF at public/downloads/sanli-environmental-june-2026.pdf
+    downloadFile: "/downloads/sanli-environmental-june-2026.pdf",
     isFeatured: true,
   },
 ];
