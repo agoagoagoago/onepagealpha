@@ -123,7 +123,7 @@ export const companies: Company[] = [
       "Mapletree Logistics Trust (SGX: M44U): FY2025/26 Performance & Valuation Analysis",
     summary:
       "A visual brief on Mapletree Logistics Trust's FY2025/26 performance and valuation — covering its Asia-Pacific logistics portfolio backed by Mapletree/Temasek, the de-rating in distribution per unit (DPU) amid currency headwinds and rising interest costs, gross revenue and aggregate leverage trends, comparative profitability and debt metrics, valuation versus NAV, geographic and concentration risks, and disciplined asset rejuvenation.",
-    reportDate: "2026-06-01",
+    reportDate: "2026-06-19",
     tags: [
       "Logistics REIT",
       "Real Estate",
