@@ -44,7 +44,7 @@ export const companies: Company[] = [
     reportTitle: "Corporate Analysis: iX Biopharma Ltd. (SGX: 42C)",
     summary:
       "A visual brief on iX Biopharma's FY2025–9M2026 corporate analysis — covering its proprietary sublingual WaferiX drug-delivery platform, the strategic pivot toward US government contracting, financial performance and cash flow, capital structure and dilution, accounting and disclosure observations, and key risks.",
-    reportDate: "2026-06-01",
+    reportDate: "2026-06-19",
     tags: [
       "Healthcare",
       "Pharmaceuticals",
@@ -71,7 +71,7 @@ export const companies: Company[] = [
       "Equity Research Snapshot: Addvalue Technologies Ltd. (SGX: A31)",
     summary:
       "A visual brief on Addvalue Technologies’ FY2026 reported turnaround, highlighting revenue growth, operating cash flow improvement, de-leveraging, order book visibility, customer concentration, capitalized development costs, and valuation/event-risk considerations.",
-    reportDate: "2026-06-01",
+    reportDate: "2026-06-19",
     tags: [
       "Satellite Communications",
       "Turnaround",
@@ -97,7 +97,7 @@ export const companies: Company[] = [
       "Koh Brothers Eco Engineering: FY2025 Performance & Risk Dashboard",
     summary:
       "A visual brief on Koh Brothers Eco Engineering's FY2025 performance and risks — covering its engineering & construction and bio-refinery (Oiltek) segments, segment profitability, financial and balance-sheet health, cash flow, order book visibility, and accounting and disclosure observations.",
-    reportDate: "2026-06-01",
+    reportDate: "2026-06-19",
     tags: [
       "Construction & Engineering",
       "Bio-Refinery",
